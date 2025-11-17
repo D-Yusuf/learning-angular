@@ -14,19 +14,23 @@ export class HomeComponent implements OnInit, OnDestroy {
   currentTime: string = '';
   todayHours: string = '0h 0m';
   private intervalId: any;
-
+  timerSeconds: number = 0;
+  timer: string = '00:00:00';
   ngOnInit() {
-    // this.updateTime();
-    // // Update time every minute
-    // this.intervalId = setInterval(() => {
-    //   this.updateTime();
-    // }, 60000);
+      // this.updateTime();
+      // Update time every minute
+      // this.intervalId = setInterval(() => {
+      //   this.updateTime();
+      // }, 60000);
+     
+      
   }
-
+  
   ngOnDestroy() {
-    // if (this.intervalId) {
-    //   clearInterval(this.intervalId);
-    // }
+      // if (this.intervalId) {
+      //   clearInterval(this.intervalId);
+      // }
+    // clearInterval(this.intervalId);
   }
 
   updateTime() {
@@ -42,14 +46,24 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isCheckedIn = true;
     this.checkInTime = new Date();
     this.updateTodayHours();
+    this.intervalId = setInterval(() => {
+      this.timerSeconds++;
+      this.timer = this.timerSecondsToTime(this.timerSeconds);
+    }, 1000);
   }
 
   checkOut() {
     this.isCheckedIn = false;
     this.checkInTime = null;
-    this.todayHours = '0h 0m';
+    this.updateTodayHours();
+    clearInterval(this.intervalId);
   }
-
+  timerSecondsToTime(seconds: number): string {
+    const hours = Math.floor(seconds / 3600) > 9 ? Math.floor(seconds / 3600) : `0${Math.floor(seconds / 3600)}`;
+    const minutes = Math.floor((seconds % 3600) / 60) > 9 ? Math.floor((seconds % 3600) / 60) : `0${Math.floor((seconds % 3600) / 60)}`;
+    const remainingSeconds = seconds % 60 > 9 ? seconds % 60 : `0${seconds % 60}`;
+    return `${hours}:${minutes}:${remainingSeconds}`;
+  }
   getCurrentTime(): string {
     return this.currentTime || new Date().toLocaleTimeString('en-US', { 
       hour: '2-digit', 
@@ -59,15 +73,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   updateTodayHours() {
-    if (!this.isCheckedIn || !this.checkInTime) {
-      this.todayHours = '0h 0m';
+    if (!this.timerSeconds) {
+      this.todayHours = '00:00:00';
       return;
     }
-    const now = new Date();
-    const diff = now.getTime() - this.checkInTime.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    this.todayHours = `${hours}h ${minutes}m`;
+    const hours = Math.floor(this.timerSeconds / (1000 * 60 * 60)) > 9 ? Math.floor(this.timerSeconds / (1000 * 60 * 60)) : `0${Math.floor(this.timerSeconds / (1000 * 60 * 60))}`;
+    const minutes = Math.floor((this.timerSeconds % (1000 * 60 * 60)) / (1000 * 60)) > 9 ? Math.floor((this.timerSeconds % (1000 * 60 * 60)) / (1000 * 60)) : `0${Math.floor((this.timerSeconds % (1000 * 60 * 60)) / (1000 * 60))}`;
+    this.todayHours = `${hours}:${minutes}`;
   }
 
   getTodayHours(): string {
@@ -78,4 +90,5 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Placeholder - you can implement actual week calculation
     return '40h 0m';
   }
+ 
 }
