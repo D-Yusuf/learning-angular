@@ -1,0 +1,28 @@
+h1 {
+  font-size: 1.8em;
+  margin-bottom: 0.5rem;
+}
+
+nav {
+  margin-bottom: 1.5rem;
+}
+
+nav a {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  margin-right: 0.5rem;
+  background-color: #eee;
+  border-radius: 4px;
+  color: #3f525c;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+nav a:hover {
+  background-color: #cfd8dc;
+}
+
+nav a.active {
+  background-color: #455a64;
+  color: white;
+}
+
